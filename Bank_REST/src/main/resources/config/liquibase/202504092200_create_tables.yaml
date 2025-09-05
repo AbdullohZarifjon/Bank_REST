@@ -1,0 +1,186 @@
+databaseChangeLog:
+  - changeSet:
+      id: "1"
+      author: "Zarif"
+      changes:
+        - createTable:
+            tableName: "users"
+            schemaName: "public"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "first_name"
+                  type: "VARCHAR(255)"
+              - column:
+                  name: "last_name"
+                  type: "VARCHAR(255)"
+              - column:
+                  name: "username"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: "phone_number"
+                  type: "VARCHAR(15)"
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: "user_status"
+                  type: "VARCHAR(50)"
+              - column:
+                  name: "password"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: "2"
+      author: "Zarif"
+      changes:
+        - createTable:
+            tableName: "roles"
+            schemaName: "public"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "role"
+                  type: "VARCHAR(50)"
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: "3"
+      author: "Zarif"
+      changes:
+        - createTable:
+            tableName: "users_roles"
+            schemaName: "public"
+            columns:
+              - column:
+                  name: "user_id"
+                  type: "BIGINT"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: "fk_users_roles_user"
+                    references: "users(id)"
+              - column:
+                  name: "role_id"
+                  type: "BIGINT"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: "fk_users_roles_role"
+                    references: "roles(id)"
+
+  - changeSet:
+      id: "4"
+      author: "Zarif"
+      changes:
+        - createTable:
+            tableName: "card"
+            schemaName: "public"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "name"
+                  type: "VARCHAR(255)"
+              - column:
+                  name: "number"
+                  type: "VARCHAR(16)"
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: "user_id"
+                  type: "BIGINT"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: "fk_card_user"
+                    references: "users(id)"
+              - column:
+                  name: "expiry_date"
+                  type: "DATE"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "status"
+                  type: "VARCHAR(50)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "balance"
+                  type: "DECIMAL(19,2)"
+                  defaultValue: "0.00"
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: "idx_card_number"
+            tableName: "card"
+            unique: true
+            columns:
+              - column:
+                  name: "number"
+
+  - changeSet:
+      id: "5"
+      author: "Zarif"
+      changes:
+        - createTable:
+            tableName: "transaction"
+            schemaName: "public"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "sender_id"
+                  type: "BIGINT"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: "fk_transaction_sender"
+                    references: "card(id)"
+              - column:
+                  name: "receiver_id"
+                  type: "BIGINT"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: "fk_transaction_receiver"
+                    references: "card(id)"
+              - column:
+                  name: "amount"
+                  type: "DECIMAL(19,2)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "status"
+                  type: "VARCHAR(50)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "created_at"
+                  type: "TIMESTAMP"
+                  constraints:
+                    nullable: false
